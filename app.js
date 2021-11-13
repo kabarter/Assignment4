@@ -1,7 +1,7 @@
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.4.1/firebase-app.js";
-import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/9.4.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, addDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.4.1/firebase-firestore.js";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -26,31 +26,45 @@ async function getBookstores(db) {
     const bookstoreList = bookstoreSnapshot.docs.map((doc) => doc.data());
     return bookstoreList;
 }
+
+//Accessing HTML elements for form and UL
 const bookstoreList = document.getElementById('bookstore-list');
 const form = document.getElementById('add-bookstore-form')
 
-function renderBookstore(doc){
+
+// setting up LI
+function renderBookstore(dc){
     let li = document.createElement("li");
     let name = document.createElement("span");
     let city = document.createElement("span");
+    let cross = document.createElement("div");
     
-    li.setAttribute('data-id', doc.id);
-    name.textContent = doc.name;
-    city.textContent = doc.city;
+    li.setAttribute('data-id', dc.id);
+    name.textContent = dc.data().name;
+    city.textContent = dc.data().city;
+    cross.textContent = 'x';
 
     li.appendChild(name);
     li.appendChild(city);
+    li.appendChild(cross);
 
     bookstoreList.appendChild(li);
+
+    cross.addEventListener('click', (e) => {
+        e.stopPropagation();
+        let id = e.target.parentElement.getAttribute('data-id');
+        deleteDoc(doc(db, "bookstore", id))
+    })
 }
 
-const bookstores = getBookstores(db).then((snapshot) => {
+//creating snapshot
+const bookstores = getDocs(collection(db, 'bookstore')).then((snapshot) => {
     snapshot.forEach((doc) =>{
         renderBookstore(doc)
     })
 })
 
-
+//submitting the form
 form.addEventListener(('submit'), (e) => {
     e.preventDefault();
     const docRef = addDoc(collection(db, "bookstore"), {
