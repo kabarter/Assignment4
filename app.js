@@ -1,7 +1,7 @@
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.4.1/firebase-app.js";
-import { getFirestore, collection, getDocs, addDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.4.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, addDoc, doc, deleteDoc, query, where, updateDoc } from "https://www.gstatic.com/firebasejs/9.4.1/firebase-firestore.js";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -32,7 +32,7 @@ const bookstoreList = document.getElementById('bookstore-list');
 const form = document.getElementById('add-bookstore-form')
 
 
-// setting up LI
+// setting up LI and creating delete
 function renderBookstore(dc){
     let li = document.createElement("li");
     let name = document.createElement("span");
@@ -63,6 +63,18 @@ const bookstores = getDocs(collection(db, 'bookstore')).then((snapshot) => {
         renderBookstore(doc)
     })
 })
+
+const q = query(collection(db, "bookstore"), where("city", "==", "boston"));
+const querySnapshot =  await getDocs(q);
+querySnapshot.forEach((doc) => {
+    console.log(doc.id, "=>", doc.data())
+})
+
+// const upDoc = doc(db, "bookstore", "I2UAkyzTq8vIDm8oIT9D");
+// updateDoc(upDoc, {
+//     name: "Unique Books"
+// })
+
 
 //submitting the form
 form.addEventListener(('submit'), (e) => {
