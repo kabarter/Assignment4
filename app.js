@@ -70,10 +70,10 @@ querySnapshot.forEach((doc) => {
     console.log(doc.id, "=>", doc.data())
 })
 
-// const upDoc = doc(db, "bookstore", "I2UAkyzTq8vIDm8oIT9D");
-// updateDoc(upDoc, {
-//     name: "Unique Books"
-// })
+const upDoc = doc(db, "bookstore", "I2UAkyzTq8vIDm8oIT9D");
+  updateDoc(upDoc, {
+     name: "Unique Books"
+ })
 
 
 //submitting the form
